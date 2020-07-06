@@ -17,6 +17,7 @@ class AppWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
         self.__content_index = 0
+        self.score = 0
         self.__dir_path = LoadFileHelper.get_dir_path(Config.Dagdai_Dir_NAME)
         self.__text_list = []
         self.__ui = Ui_MainWindow()
@@ -42,6 +43,7 @@ class AppWindow(QtWidgets.QMainWindow):
         if label_text.strip() == line_edit_text.strip():
             self.__ui.CorrectLabel.setStyleSheet("background-color: lightgreen")
             self.__ui.CorrectLabel.setText("Correct!!")
+            self.score = self.score + 1
         else:
             self.__ui.CorrectLabel.setStyleSheet("background-color: red")
             self.__ui.CorrectLabel.setText("Ooops!!")
@@ -51,7 +53,9 @@ class AppWindow(QtWidgets.QMainWindow):
             self.__ui.CharacterLabel.setText(self.__text_list[self.__content_index])
         else:
             self.__ui.CharacterLabel.setText("Finish!!")
+            self.__ui.CorrectLabel.setAutoFillBackground(False)
             self.__ui.VocabularyLineEdit.setEnabled(False)
+            self.__ui.ScoreLabel.setText("SCORE: " + str(round(self.score / len(self.__text_list) * 100, 1)))
 
     def load_ppt_file(self):
         self.__text_list = []
@@ -61,7 +65,6 @@ class AppWindow(QtWidgets.QMainWindow):
         file_list = LoadFileHelper.get_file_list(ppt_dir)
         file_index = self.__ui.FileListWidget.currentRow()
         file_path = ppt_dir + "\\" + file_list[file_index]
-        dir_index = self.__ui.DircomboBox.currentIndex()
         self.__text_list = LoadFileHelper.load_powerpoint_file(file_path)
         self.__ui.CharacterLabel.setText(self.__text_list[self.__content_index])
 
